@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Properties>
+  <Property name="log-path">/home/gaspar.herman/workspace</Property>
+
+  </Properties>
+  <Appenders>
+    <Console name="Console">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+
+    <File name="Debugs" fileName="${log-path}/debug.log">
+      <PatternLayout pattern="%d{HH:mm:ss [%t] %-5level %logger{36} - %msg%n"/>
+    </File>
+    
+    <File name="Errores" fileName="${log-path}/errores.log" append="true">
+    	<PatternLayout pattern="%d{HH:mm:ss [%t] %-5level %logger{36} - %msg%n"/>
+    </File>
+    
+    <JDBC name="DB" tableName="application_log">
+    	<ConnectionFactory class="ConnectionFactory" method="getDatabaseConnection" />
+    	<Column name="ID" />
+    	<Column name="EVENT_DATE" isEventTimestamp="true" />
+    	<Column name="LEVEL" pattern="%level" />
+    	<Column name="LOGGER" pattern="%logger" />
+    	<Column name="MESSAGE" pattern="%message" />
+    	<Column name="THROWABLE" pattern="%ex{full}"/>
+    </JDBC>
+
+    <!--  <Async name="Async">
+      <AppenderRef ref="MyFile"/>
+    </Async> -->
+
+  </Appenders>
+  <Loggers>
+    <Root level="debug">
+      <!--<AppenderRef ref ="Async"/>-->
+      <AppenderRef ref="Console" level="trace"/>
+    </Root>
+    
+    <logger name="ErroresCalcular" additivity="TRUE" level="ALL">
+    	<AppenderRef ref="Errores" level="ERROR" />
+    </logger>
+    
+    <logger name="DebugsAConseguir" additivity="TRUE" level="ALL">
+    	<AppenderRef ref="Debugs" level="DEBUG"/>
+    </logger>
+    <logger name="DBAppender" additivity="FALSE" level="ALL">
+    	<AppenderRef ref="DB" level="ALL"/>
+    </logger>
+  </Loggers>
+</Configuration>
